@@ -1,33 +1,25 @@
-add-task.onclick = createTask;
+const taskList = document.getElementById("task-list");
 
-function createTask(){
-  const name = task-name.value.trim();
-  const rate = Number(task-rate.value) || 0;
-  if(!name || rate<=0) return alert('Enter fields');
-  const task = { id: Date.now().toString(), name, rate };
-  APP_STATE.tasks.push(task);
-  renderTaskList();
-  saveUserData();
-}
+document.getElementById("add-task").onclick = () => {
+  const name = document.getElementById("task-name").value;
+  const rate = Number(document.getElementById("task-rate").value);
 
-function renderTaskList(){
-  task-list.innerHTML = '';
-  APP_STATE.tasks.forEach(t=>{
-    const el=document.createElement('div');
-    el.className='task';
-    el.innerHTML=`<strong>${t.name}</strong> <small>${t.rate} coins/min</small>
-    <div class="row"><input type="number" id="mins-${t.id}"><button onclick="completeTask('${t.id}')">Complete</button></div>`;
-    task-list.appendChild(el);
-  });
-}
+  if (!name || !rate) return alert("Enter task name & rate");
 
-function completeTask(id){
-  const mins = Number(document.getElementById('mins-'+id).value)||0;
-  if(mins<=0) return;
-  const t = APP_STATE.tasks.find(x=>x.id===id);
-  const earned = mins*t.rate;
-  APP_STATE.coins+=earned;
-  coins.textContent = APP_STATE.coins;
-  saveUserData();
-  alert(`Earned ${earned}`);
-}
+  const taskEl = document.createElement("div");
+  taskEl.className = "task";
+  taskEl.innerHTML = `
+    <span>${name} - ${rate} coins/min</span>
+    <button class="start">Start</button>
+  `;
+
+  taskEl.querySelector(".start").onclick = () => {
+    let time = 0;
+    const interval = setInterval(() => {
+      time++;
+      updateCoins(rate);
+    }, 60000);
+  };
+
+  taskList.appendChild(taskEl);
+};
