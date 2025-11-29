@@ -1,151 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>To-Do Quest & Coin System</title>
-  <style>
-    body { font-family: Arial, sans-serif; background:#f2f2f2; margin:0; padding:20px; }
-    h1 { text-align:center; }
-    .container { max-width:900px; margin:auto; background:#fff; padding:20px; border-radius:12px; }
-    .section { margin-top:30px; }
-    input, button { padding:8px 12px; margin:5px; }
-    .task, .ent-item { background:#e7e7e7; padding:12px; margin-top:10px; border-radius:10px; }
-  </style>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Task Coin System</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>To-Do Quest & Reward Coins</h1>
-    <p>Complete tasks → earn coins → spend in entertainment.</p>
+  <div id="app" class="container">
+    <header>
+      <h1>Task Coin System</h1>
+      <div id="auth-ui"></div>
+    </header>
 
-    <h2>💰 Coins: <span id="coins">0</span></h2>
+    <main id="main-ui" class="hidden">
+      <section id="wallet">
+        <h2>Coins: <span id="coins">0</span></h2>
+      </section>
 
-    <div class="section">
-      <h2>📝 Add Task</h2>
-      <input id="taskName" placeholder="Task name" />
-      <input id="taskRate" type="number" placeholder="Coins per minute" />
-      <button onclick="addTask()">Add Task</button>
-    </div>
+      <section id="tasks">
+        <h2>Tasks</h2>
+        <div class="row">
+          <input id="task-name" placeholder="Task name">
+          <input id="task-rate" type="number" placeholder="Coins / min">
+          <button id="add-task">Add Task</button>
+        </div>
+        <div id="task-list"></div>
+      </section>
 
-    <div id="taskList"></div>
+      <section id="shop">
+        <h2>Entertainment Shop</h2>
+        <div class="row">
+          <input id="ent-name" placeholder="Activity name">
+          <input id="ent-cost" type="number" placeholder="Cost per min">
+          <input id="ent-mins" type="number" placeholder="Minutes">
+          <button id="start-ent">Start</button>
+        </div>
+        <div id="ent-list"></div>
+      </section>
 
-    <div class="section">
-      <h2>🎮 Entertainment Shop</h2>
-      <input id="entName" placeholder="Activity name" />
-      <input id="entCost" type="number" placeholder="Cost per minute" />
-      <input id="entMinutes" type="number" placeholder="Minutes" />
-      <button onclick="startEntertainment()">Start</button>
-    </div>
+      <section id="achievements" class="hidden">
+        <h2>Achievements</h2>
+        <div id="ach-list"></div>
+      </section>
+    </main>
 
-    <div id="entList"></div>
+    <audio id="ding" src="ding.mp3" preload="auto"></audio>
   </div>
 
-<script>
-/****************************
-  FIREBASE CONFIG
-*****************************/
-const firebaseConfig = {
-  apiKey: "AIzaSyAsMxamUDdtbYbse359_wJJvU7smEMC7YI",
-  authDomain: "task-6a033.firebaseapp.com",
-  projectId: "task-6a033",
-  storageBucket: "task-6a033.firebasestorage.app",
-  messagingSenderId: "1058933867414",
-  appId: "1:1058933867414:web:9a8bde3d596760b39013b7"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-/****************************
-  LOCAL + CLOUD DATA
-*****************************/
-let coins = Number(localStorage.getItem("coins")) || 0;
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-const coinDisplay = document.getElementById("coins");
-const taskList = document.getElementById("taskList");
-const entList = document.getElementById("entList");
-
-function saveLocal() {
-  localStorage.setItem("coins", coins);
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-async function saveCloud() {
-  await db.collection("userdata").doc("main").set({ coins, tasks });
-}
-
-function renderTasks() {
-  taskList.innerHTML = "";
-  tasks.forEach((t, i) => {
-    const div = document.createElement("div");
-    div.className = "task";
-    div.innerHTML = `
-      <strong>${t.name}</strong><br>
-      Coins/min: ${t.rate}<br>
-      Minutes: <input type="number" id="mins${i}" />
-      <button onclick="completeTask(${i})">Complete</button>
-    `;
-    taskList.appendChild(div);
-  });
-}
-
-function updateCoins() {
-  coinDisplay.textContent = coins;
-  saveLocal();  
-  saveCloud(); 
-}
-
-function addTask() {
-  const name = document.getElementById("taskName").value;
-  const rate = Number(document.getElementById("taskRate").value);
-  if (!name || !rate) return alert("Enter all details!");
-
-  tasks.push({ name, rate });
-  renderTasks();
-  saveLocal();
-  saveCloud();
-}
-
-function completeTask(i) {
-  const mins = Number(document.getElementById(`mins${i}`).value);
-  if (!mins) return alert("Enter minutes");
-
-  const reward = mins * tasks[i].rate;
-  coins += reward;
-  updateCoins();
-  alert(`You earned ${reward} coins!`);
-}
-
-function startEntertainment() {
-  const name = document.getElementById("entName").value;
-  const cost = Number(document.getElementById("entCost").value);
-  const mins = Number(document.getElementById("entMinutes").value);
-
-  if (!name || !cost || !mins) return alert("Enter all fields");
-
-  const total = cost * mins;
-  if (coins < total) return alert("Not enough coins");
-
-  coins -= total;
-  updateCoins();
-
-  const div = document.createElement("div");
-  div.className = "ent-item";
-  div.textContent = `${name} running for ${mins} mins...`;
-  entList.appendChild(div);
-
-  setTimeout(() => {
-    alert(`${name} session finished!`);
-    div.textContent = `${name} finished.`;
-  }, mins * 60000);
-}
-
-renderTasks();
-updateCoins();
-</script>
+  <script src="firebase-config.js"></script>
+  <script src="auth.js" defer></script>
+  <script src="db.js" defer></script>
+  <script src="tasks.js" defer></script>
+  <script src="shop.js" defer></script>
+  <script src="notifications.js" defer></script>
+  <script src="achievements.js" defer></script>
 </body>
 </html>
