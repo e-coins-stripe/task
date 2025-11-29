@@ -1,19 +1,20 @@
-start-ent.onclick = startEntertainment;
+const entList = document.getElementById("ent-list");
 
-function startEntertainment(){
-  const name = ent-name.value.trim();
-  const cost = Number(ent-cost.value)||0;
-  const mins = Number(ent-mins.value)||0;
-  if(!name||cost<=0||mins<=0) return alert('Fill fields');
-  const total = cost*mins;
-  if(APP_STATE.coins < total) return alert('Not enough coins');
-  APP_STATE.coins-=total;
-  coins.textContent=APP_STATE.coins;
-  saveUserData();
-  const id=Date.now();
-  const div=document.createElement('div');
-  div.className='ent-item';
-  div.textContent=`${name} running...`;
-  ent-list.appendChild(div);
-  setTimeout(()=>notify(`${name} finished`), mins*60000);
-}
+document.getElementById("start-ent").onclick = () => {
+  const name = document.getElementById("ent-name").value;
+  const cost = Number(document.getElementById("ent-cost").value);
+  const mins = Number(document.getElementById("ent-mins").value);
+
+  if (!name || !cost || !mins) return alert("Enter all values!");
+
+  const total = cost * mins;
+
+  if (coins < total) return alert("Not enough coins!");
+
+  updateCoins(-total);
+
+  const item = document.createElement("div");
+  item.className = "ent";
+  item.innerText = `${name}: -${total} coins`;
+  entList.appendChild(item);
+};
