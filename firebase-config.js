@@ -1,3 +1,7 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAsMxamUDdtbYbse359_wJJvU7smEMC7YI",
   authDomain: "task-6a033.firebaseapp.com",
@@ -7,6 +11,6 @@ const firebaseConfig = {
   appId: "1:1058933867414:web:9a8bde3d596760b39013b7"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
