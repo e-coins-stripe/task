@@ -1,15 +1,10 @@
-function userDocRef(uid){ return db.collection('users').doc(uid); }
+let coins = 0;
 
-async function loadUserData(uid){
-  const doc = await userDocRef(uid).get();
-  const data = doc.exists ? doc.data() : { coins:0, tasks:[], achievements:[] };
-  window.APP_STATE = data;
-  window.APP_STATE.uid = uid;
-  coins.textContent = data.coins;
-  renderTaskList();
-  renderAchievements();
-}
+function updateCoins(amount) {
+  coins += amount;
+  document.getElementById("coins").innerText = coins;
 
-async function saveUserData(){
-  await userDocRef(APP_STATE.uid).set(APP_STATE);
+  const ding = document.getElementById("ding");
+  ding.currentTime = 0;
+  ding.play();
 }
