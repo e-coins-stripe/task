@@ -1,39 +1,29 @@
-const authUi = document.getElementById('auth-ui');
-const mainUi = document.getElementById('main-ui');
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    const providerUI = `
+      <button id="login-btn">Login</button>
+      <button id="signup-btn">Sign Up</button>
+      <button id="logout-btn" class="hidden">Logout</button>
+    `;
+    document.getElementById("auth-ui").innerHTML = providerUI;
 
-function renderAuth() {
-  authUi.innerHTML = `
-    <div class="row">
-      <input id="email" placeholder="Email">
-      <input id="password" type="password" placeholder="Password">
-      <button id="btn-signup">Signup</button>
-      <button id="btn-login">Login</button>
-    </div>
-  `;
-  document.getElementById('btn-signup').onclick = signup;
-  document.getElementById('btn-login').onclick = login;
-}
+    document.getElementById("login-btn").onclick = () => {
+      const email = prompt("Email:");
+      const pass = prompt("Password:");
+      auth.signInWithEmailAndPassword(email, pass);
+    };
 
-async function signup() {
-  const e = email.value;
-  const p = password.value;
-  try { await auth.createUserWithEmailAndPassword(e,p); }
-  catch(err){ alert(err.message); }
-}
+    document.getElementById("signup-btn").onclick = () => {
+      const email = prompt("Email:");
+      const pass = prompt("Password:");
+      auth.createUserWithEmailAndPassword(email, pass);
+    };
+  } else {
+    document.getElementById("logout-btn").classList.remove("hidden");
+    document.getElementById("login-btn")?.classList.add("hidden");
+    document.getElementById("signup-btn")?.classList.add("hidden");
 
-async function login(){
-  const e = email.value;
-  const p = password.value;
-  try{ await auth.signInWithEmailAndPassword(e,p); }
-  catch(err){ alert(err.message); }
-}
-
-function renderSignedIn(user){
-  authUi.innerHTML = `<div class="row"><strong>${user.email}</strong><button id="btn-logout">Logout</button></div>`;
-  btn-logout.onclick = ()=> auth.signOut();
-}
-
-auth.onAuthStateChanged(async user => {
-  if (user) { renderSignedIn(user); mainUi.classList.remove('hidden'); await loadUserData(user.uid); }
-  else { renderAuth(); mainUi.classList.add('hidden'); }
+    document.getElementById("logout-btn").onclick = () => auth.signOut();
+    document.getElementById("main-ui").classList.remove("hidden");
+  }
 });
