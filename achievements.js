@@ -1,8 +1,8 @@
-function renderAchievements(){
-  ach-list.innerHTML='';
-  (APP_STATE.achievements||[]).forEach(a=>{
-    const d=document.createElement('div');
-    d.className='task'; d.textContent=a;
-    ach-list.appendChild(d);
-  });
+const achList = document.getElementById("ach-list");
+
+function addAchievement(text) {
+  const el = document.createElement("div");
+  el.className = "achievement";
+  el.innerText = text;
+  achList.appendChild(el);
 }
