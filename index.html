@@ -21,35 +21,34 @@
       <section id="tasks">
         <h2>Tasks</h2>
         <div class="row">
-          <input id="task-name" placeholder="Task name">
-          <input id="task-rate" type="number" placeholder="Coins / min">
-          <button id="add-task">Add Task</button>
+          <input id="taskName" placeholder="Task name">
+          <input id="taskRate" type="number" placeholder="Coins / min">
+          <button id="addTask">Add Task</button>
         </div>
-        <div id="task-list"></div>
+        <div id="taskList"></div>
       </section>
 
       <section id="shop">
         <h2>Entertainment Shop</h2>
         <div class="row">
-          <input id="ent-name" placeholder="Activity name">
-          <input id="ent-cost" type="number" placeholder="Cost per min">
-          <input id="ent-mins" type="number" placeholder="Minutes">
-          <button id="start-ent">Start</button>
+          <input id="entName" placeholder="Activity name">
+          <input id="entCost" type="number" placeholder="Cost per min">
+          <input id="entMins" type="number" placeholder="Minutes">
+          <button id="startEnt">Start</button>
         </div>
-        <div id="ent-list"></div>
+        <div id="entList"></div>
       </section>
 
       <section id="achievements" class="hidden">
         <h2>Achievements</h2>
-        <div id="ach-list"></div>
+        <div id="achList"></div>
       </section>
     </main>
 
     <audio id="ding" src="ding.mp3" preload="auto"></audio>
   </div>
 
-  <!-- REMOVE old compat CDN scripts -->
-  <!-- ADD module scripts instead -->
+  <!-- Module style: firebase-config must be a module exporting auth & db -->
   <script type="module" src="firebase-config.js"></script>
   <script type="module" src="auth.js"></script>
   <script type="module" src="db.js"></script>
@@ -57,6 +56,5 @@
   <script type="module" src="shop.js"></script>
   <script type="module" src="notifications.js"></script>
   <script type="module" src="achievements.js"></script>
-
 </body>
 </html>
