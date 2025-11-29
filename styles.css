@@ -1,11 +1,11 @@
-:root{--bg:#f5f7fb;--card:#ffffff;--muted:#666}
+:root{--bg:#f5f7fb;--card:#fff;--muted:#666}
 *{box-sizing:border-box}
-body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:var(--bg); margin:0; padding:24px}
+body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;background:var(--bg);margin:0;padding:24px}
 .container{max-width:900px;margin:0 auto;background:var(--card);padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(20,20,30,0.06)}
 header{display:flex;justify-content:space-between;align-items:center}
 .hidden{display:none}
 .row{display:flex;gap:8px;align-items:center;margin:8px 0}
 input{padding:8px;border-radius:8px;border:1px solid #ddd}
 button{padding:8px 12px;border-radius:8px;border:none;background:#2563eb;color:#fff;cursor:pointer}
-#task-list .task, #ent-list .ent-item{background:#f3f4f6;padding:10px;border-radius:8px;margin:6px 0}
+.task, .ent-item, .achievement{background:#f3f4f6;padding:10px;border-radius:8px;margin:6px 0}
 small{color:var(--muted)}
