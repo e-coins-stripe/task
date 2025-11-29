@@ -1,4 +1,4 @@
-// auth.js
+// auth.js (module)
 import { auth } from "./firebase-config.js";
 import {
   onAuthStateChanged,
@@ -7,42 +7,45 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-// UI elements
 const authUI = document.getElementById("auth-ui");
 const mainUI = document.getElementById("main-ui");
 
-// Listen to login state
-onAuthStateChanged(auth, user => {
-  if (user) {
-    authUI.innerHTML = `<button id="logout">Logout</button>`;
-    mainUI.classList.remove("hidden");
+function renderSignedOut() {
+  authUI.innerHTML = `
+    <div class="row">
+      <button id="loginBtn">Login</button>
+      <button id="signupBtn">Sign Up</button>
+    </div>
+  `;
+  document.getElementById("loginBtn").onclick = showLogin;
+  document.getElementById("signupBtn").onclick = showSignup;
+  mainUI.classList.add("hidden");
+}
 
-    document.getElementById("logout").onclick = () => {
-      signOut(auth);
-    };
+function renderSignedIn(user) {
+  authUI.innerHTML = `<div class="row"><strong>${user.email}</strong> <button id="logoutBtn">Logout</button></div>`;
+  document.getElementById("logoutBtn").onclick = () => signOut(auth);
+  mainUI.classList.remove("hidden");
+}
 
-  } else {
-    authUI.innerHTML = `
-      <button id="login-btn">Login</button>
-      <button id="signup-btn">Sign Up</button>
-    `;
-    mainUI.classList.add("hidden");
-
-    document.getElementById("login-btn").onclick = showLogin;
-    document.getElementById("signup-btn").onclick = showSignup;
-  }
+// Observe auth state
+onAuthStateChanged(auth, (user) => {
+  if (user) renderSignedIn(user);
+  else renderSignedOut();
 });
 
 function showLogin() {
   const email = prompt("Email:");
+  if (!email) return;
   const pass = prompt("Password:");
-  signInWithEmailAndPassword(auth, email, pass)
-    .catch(e => alert(e.message));
+  if (!pass) return;
+  signInWithEmailAndPassword(auth, email, pass).catch((e) => alert(e.message));
 }
 
 function showSignup() {
   const email = prompt("Email:");
+  if (!email) return;
   const pass = prompt("Password:");
-  createUserWithEmailAndPassword(auth, email, pass)
-    .catch(e => alert(e.message));
+  if (!pass) return;
+  createUserWithEmailAndPassword(auth, email, pass).catch((e) => alert(e.message));
 }
